@@ -12,6 +12,16 @@ services:
     volumes:
       - ./diarios:/usr/src/app/diarios
       - /etc/localtime:/etc/localtime:ro
+  app2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: docker2.env
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./diarios:/usr/src/app/diarios
+      - /etc/localtime:/etc/localtime:ro
   web:
     image: httpd:alpine
     restart: unless-stopped
