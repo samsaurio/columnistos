@@ -1,0 +1,6 @@
+FROM httpd:alpine
+
+MAINTAINER Lu Pa <admin@tedic.org>
+
+RUN apk --update --no-cache add curl
+
