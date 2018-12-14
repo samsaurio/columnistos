@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    #restart: unless-stopped
     env_file: docker.env
     security_opt:
       - no-new-privileges:true
@@ -13,7 +12,6 @@ services:
       - ./diarios:/usr/src/app/diarios
       - /etc/localtime:/etc/localtime:ro
   web:
-#    image: httpd:alpine
     build:
       context: .
       dockerfile: Dockerfile.web
