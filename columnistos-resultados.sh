@@ -14,12 +14,13 @@ docker-compose -f $carpetascript/docker-compose.yml run --rm app sqlite3 \
 	"select * from articles a join authors aut where a.author_id = aut.id;" > \
 	$carpetascript/$(date +%Y%m%d_%H)_articulos.csv
 
+## AHORA SUBIMOS SIEMPRE
 # Subimos?
-echo -e "------------------------------------------------"
-echo -n "Desea subir el resultado a davfs (s/n): "
-read subir
-echo -e "------------------------------------------------"
-if [ "$subir" = "s" ]; then
+#echo -e "------------------------------------------------"
+#echo -n "Desea subir el resultado a davfs (s/n): "
+#read subir
+#echo -e "------------------------------------------------"
+#if [ "$subir" = "s" ]; then
 
   # Creo carpeta para montar davfs
   mkdir -p $carpeta || exit
@@ -31,8 +32,10 @@ if [ "$subir" = "s" ]; then
 
   # Copio y limpio
   echo -e "Subiendo..."
+  # Saco el CSV para la carpeta externa
   mv $carpetascript/$(date +%Y%m%d_%H)_articulos.csv $carpeta
-  docker cp columnistosdocker_app_1:/usr/src/app/diarios/diarios.sqlite $carpeta/$(date +%Y%m%d_%H)_diarios.sqlite
+  # Respaldo el sqlite en carpeta externa
+  cp diarios/diarios.sqlite $carpeta/$(date +%Y%m%d_%H)_diarios.sqlite
   sleep 1
 
   #Desmonto carpeta
@@ -43,8 +46,8 @@ if [ "$subir" = "s" ]; then
   sleep 1
   # FIXME: verificar si existe y sacar mensaje
   rmdir $carpeta
-else
-  echo -e "\nNo se copia remotamente, el archivo está en:"
-  ls -lh $carpetascript/$(date +%Y%m%d_%H)_articulos.csv
-  sleep 2
-fi
+#else
+#  echo -e "\nNo se copia remotamente, el archivo está en:"
+#  ls -lh $carpetascript/$(date +%Y%m%d_%H)_articulos.csv
+#  sleep 2
+#fi
