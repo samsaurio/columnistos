@@ -31,13 +31,13 @@ function obtengoCsv {
   $bincompose -f $carpetascript/docker-compose.yml run --rm app sqlite3 \
 	-header -csv /usr/src/app/diarios/diarios.sqlite \
 	"select * from articles a join authors aut where a.author_id = aut.id;" > \
-	"$carpeta"/"$pais"-articulos.csv || exit 1
+	"$carpeta"/"$pais"_articulos.csv || exit 1
 }
 
 function obtengoSqlite {
   mkdir -p $carpeta
   echo -e "Obteniendo resultados y guardando en $carpeta"
-  cp "$carpetascript/diarios/diarios.sqlite" "$carpeta"/"$pais"-columnistos.sqlite || exit 1
+  cp "$carpetascript/diarios/diarios.sqlite" "$carpeta"/"$pais"_columnistos.sqlite || exit 1
 }
 
 #######################
@@ -51,3 +51,8 @@ function obtengoSqlite {
 obtengoCsv
 
 obtengoSqlite
+
+# Si pasó las dos funciones no hubo error
+# FIXME: esto se podría hacer mejor
+echo -e "Generando registro en $carpeta"
+echo "$(date +%Y%m%d)" > "$carpeta"/"$pais"_log.txt
