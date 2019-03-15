@@ -6,10 +6,11 @@
 carpetascript="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 carpeta=$carpetascript/columnistos-resultados
 subir=n
+composebin=/usr/local/bin/docker-compose
 
 # Obtengo resultados
 echo -e "Sacando resultados"
-docker-compose -f $carpetascript/docker-compose.yml run --rm app sqlite3 \
+$composebin -f $carpetascript/docker-compose.yml run --rm app sqlite3 \
 	-header -csv /usr/src/app/diarios/diarios.sqlite \
 	"select * from articles a join authors aut where a.author_id = aut.id;" > \
 	$carpetascript/$(date +%Y%m%d_%H)_articulos.csv
