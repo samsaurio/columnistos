@@ -21,7 +21,9 @@ class LanacionpySpider(scrapy.Spider):
         @returns requests 0 0
         @scrapes author title url
         """
-        selectors = response.xpath('//*[@id="west"]/div[4]/div/div/div[1]/article')
+        # Esta búsqueda se queda con todo lo que está debajo del arbol cuya id es west (panel principal)
+        # de esto busca todos los articulos, pero filtra el primer div y el enlace
+        selectors = response.xpath('//*[@id="west"]//article/div/a[2]')
         ind = 0
         for selector in selectors:
             link = response.urljoin(selector.xpath('.//@href').extract_first())
