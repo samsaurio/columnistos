@@ -21,11 +21,16 @@ class LanacionpySpider(scrapy.Spider):
         @returns requests 0 0
         @scrapes author title url
         """
-        selectors = response.xpath('//*[@id="west"]/div/div[2]/div[1]/div[2]/div/article')
+        selectors = response.xpath('//*[@id="west"]/div[4]/div/div/div[1]/article')
+        ind = 0
         for selector in selectors:
             link = response.urljoin(selector.xpath('.//@href').extract_first())
             if link is not None:
                 yield scrapy.Request(link, callback=self.parse_article)
+            ind=ind+1
+        print (">>>> Artículos encontrados: ")
+        print (ind)
+
 
     def parse_article(self, response):
         import re
