@@ -4,12 +4,20 @@ import logging
 from scrapy.loader import ItemLoader
 from diarios.items import DiariosItem
 
+## FIXME: borrar
+import os
+
 logging.basicConfig(level=logging.DEBUG)
 
 class LanacionpySpider(scrapy.Spider):
     name = 'lanacionpy'
     allowed_domains = ['www.lanacion.com.py']
-    start_urls = ['https://www.lanacion.com.py/category/columnistas']
+    # start_urls = ['https://www.lanacion.com.py/category/columnistas']
+
+    ## FIXME: borrar y desomentar arriba
+    cwd = os.getcwd()
+    start_urls = [f'file:////127.0.0.1/{cwd}/lanacion_aux.html']
+
     custom_settings = {
         'ROBOTSTXT_OBEY': False,
     }
@@ -26,7 +34,11 @@ class LanacionpySpider(scrapy.Spider):
         selectors = response.xpath('//*[@id="west"]//article/div/a[2]')
         ind = 0
         for selector in selectors:
-            link = response.urljoin(selector.xpath('.//@href').extract_first())
+            #link = response.urljoin(selector.xpath('.//@href').extract_first())
+
+            #FIXME: borrar y descomentar arriba
+            link = "https://www.lanacion.com.py"+selector.xpath('.//@href').extract_first()
+
             if link is not None:
                 yield scrapy.Request(link, callback=self.parse_article)
             ind=ind+1
