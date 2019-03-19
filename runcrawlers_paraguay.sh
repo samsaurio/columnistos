@@ -2,7 +2,7 @@
 #export TESTING='True'
 export LOG_FOLDER='./logs/'
 
-cd diarios
+cd diarios || exit
 scrapy crawl lanacionpy
 scrapy crawl abc
 scrapy crawl ultimahora

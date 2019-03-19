@@ -17,9 +17,6 @@ RUN mkdir logs
 
 COPY . .
 
-# para poder recueprar su contenido al guardar la persistencia
-RUN mv diarios diariosAux
-
 COPY docker-run.sh /
 
 CMD [ "/docker-run.sh" ]

@@ -8,14 +8,14 @@ from diarios.items import DiariosItem
 class UltimahoraSpider(scrapy.Spider):
     name = 'ultimahora'
     allowed_domains = ['www.ultimahora.com']
-    start_urls = ['http://www.ultimahora.com']
+    start_urls = ['https://www.ultimahora.com']
     custom_settings = {
         'ROBOTSTXT_OBEY': False,
     }
 
     def parse(self, response):
         """
-        @url http://www.ultimahora.com
+        @url https://www.ultimahora.com
         @returns items 1 14
         @returns requests 0 0
         @scrapes author title url

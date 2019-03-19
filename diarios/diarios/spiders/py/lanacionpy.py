@@ -9,14 +9,14 @@ logging.basicConfig(level=logging.DEBUG)
 class LanacionpySpider(scrapy.Spider):
     name = 'lanacionpy'
     allowed_domains = ['www.lanacion.com.py']
-    start_urls = ['http://www.lanacion.com.py/category/columnistas']
+    start_urls = ['https://www.lanacion.com.py/category/columnistas']
     custom_settings = {
         'ROBOTSTXT_OBEY': False,
     }
 
     def parse(self, response):
         """
-        @url http://www.lanacion.com.py/category/columnistas
+        @url https://www.lanacion.com.py/category/columnistas
         @returns items 1 14
         @returns requests 0 0
         @scrapes author title url
