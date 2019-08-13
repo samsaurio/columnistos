@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import logging
 from scrapy.loader import ItemLoader
 from diarios.items import DiariosItem
 

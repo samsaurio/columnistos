@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import scrapy
+import logging
 from scrapy.loader import ItemLoader
-
 from diarios.items import DiariosItem
 
+logging.basicConfig(level=logging.DEBUG)
 
 class AbcSpider(scrapy.Spider):
     name = 'abc'
@@ -26,21 +27,26 @@ class AbcSpider(scrapy.Spider):
         ind = 0
         for selector in selectors:
             link = response.urljoin(selector.xpath('.//@href').extract_first())
+            print (">>> URL " + str(ind+1) + " -> " + link)
             if link is not None:
                 yield scrapy.Request(link, callback=self.parse_article)
                 ind=ind+1
-                print (">>>> Artículos encontrados: ")
-                print (ind)
+        print (">> Artículos encontrados: " + str(ind))
 
     def parse_article(self, selector, response):
         import re
         loader = ItemLoader(DiariosItem(), selector=selector)
-        # Busco autor
-        autor = selector.xpath('.//h3//text()').extract_first().title().strip()
+        # Guardo URL
+        uerele = response.request.url
+        loader.add_value('url', uerele)
+        print(uerele)
+        # Guardo título
+        titulo = selector.xpath('title', './/h1//text()').strip()
+        loader.add_xpath('title', titulo)
+        print(titulo)
+        # Busco y guardo autor
+        autor = selector.xpath('//*[@class="article-author"]/a/span/text()').extract_first().title().strip()
         autor = re.sub('[^a-zA-ZñÑáéíóúÁÉÍÓÚ ]', '', autor)
         loader.add_value('author', autor)
-        # Guardo título
-        loader.add_xpath('title', './/h2//a//text()'.strip())
-        # Guardo URL
-        loader.add_xpath('url', './/h2//@href')
+        print (autor)
         return loader.load_item()
