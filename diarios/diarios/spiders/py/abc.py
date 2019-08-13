@@ -20,9 +20,17 @@ class AbcSpider(scrapy.Spider):
         @returns requests 0 0
         @scrapes author title url
         """
-        selectors = response.xpath('//*[@class="listed"]/ul/li')
+        # Esta búsqueda se queda con todo lo que tiene clase item-article y article-link
+        # de esto busca todos los articulos
+        selectors = response.xpath('//*[@class="item-article"]//*[@class="article-link"]')
+        ind = 0
         for selector in selectors:
-            yield self.parse_article(selector, response)
+            link = response.urljoin(selector.xpath('.//@href').extract_first())
+            if link is not None:
+                yield scrapy.Request(link, callback=self.parse_article)
+                ind=ind+1
+                print (">>>> Artículos encontrados: ")
+                print (ind)
 
     def parse_article(self, selector, response):
         import re

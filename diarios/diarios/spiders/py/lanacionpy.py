@@ -4,7 +4,7 @@ import logging
 from scrapy.loader import ItemLoader
 from diarios.items import DiariosItem
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 class LanacionpySpider(scrapy.Spider):
     name = 'lanacionpy'
@@ -25,16 +25,11 @@ class LanacionpySpider(scrapy.Spider):
         # Esta búsqueda se queda con todo lo que está debajo del arbol cuya id es west (panel principal)
         # de esto busca todos los articulos, pero filtra el primer div y el enlace
         selectors = response.xpath('//*[@id="west"]//article/div/a[2]')
-        ind = 0
+        # Recorro los resultados y extraigo la URL
         for selector in selectors:
             link = response.urljoin(selector.xpath('.//@href').extract_first())
-
             if link is not None:
                 yield scrapy.Request(link, callback=self.parse_article)
-            ind=ind+1
-        print (">>>> Artículos encontrados: ")
-        print (ind)
-
 
     def parse_article(self, response):
         import re
