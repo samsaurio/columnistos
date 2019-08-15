@@ -27,26 +27,23 @@ class AbcSpider(scrapy.Spider):
         ind = 0
         for selector in selectors:
             link = response.urljoin(selector.xpath('.//@href').extract_first())
-            print (">>> URL " + str(ind+1) + " -> " + link)
             if link is not None:
                 yield scrapy.Request(link, callback=self.parse_article)
                 ind=ind+1
-        print (">> Artículos encontrados: " + str(ind))
 
-    def parse_article(self, selector, response):
+    def parse_article(self, response):
         import re
+        selector = response.xpath('//*[@class="article-container"]')
         loader = ItemLoader(DiariosItem(), selector=selector)
-        # Guardo URL
-        uerele = response.request.url
-        loader.add_value('url', uerele)
-        print(uerele)
-        # Guardo título
-        titulo = selector.xpath('title', './/h1//text()').strip()
-        loader.add_xpath('title', titulo)
-        print(titulo)
+
         # Busco y guardo autor
-        autor = selector.xpath('//*[@class="article-author"]/a/span/text()').extract_first().title().strip()
+        autor = response.xpath('//*[@class="article-author"]/a/span/text()').extract_first().title().strip()
         autor = re.sub('[^a-zA-ZñÑáéíóúÁÉÍÓÚ ]', '', autor)
         loader.add_value('author', autor)
-        print (autor)
+
+        # Guardo título
+        loader.add_value('title', response.xpath('.//h1//text()').extract_first().strip())
+
+        # Guardo URL
+        loader.add_value('url', response.request.url)
         return loader.load_item()
