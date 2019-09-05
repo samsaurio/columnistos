@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
+import json
+
 import scrapy
-import logging
 from scrapy.loader import ItemLoader
+
 from diarios.items import DiariosItem
 
-logging.basicConfig(level=logging.DEBUG)
 
 class AbcSpider(scrapy.Spider):
     name = 'abc'
+    limit_articles = '50'
     allowed_domains = ['www.abc.com.py']
-    start_urls = ['http://www.abc.com.py/edicion-impresa/opinion']
+    start_urls = ['https://www.abc.com.py/pf/api/v3/content/' +
+                  'fetch/sections-api?query={"arc-site":"abccolor"' +
+                  ',"id":"/edicion-impresa/opinion","limit":"' +
+                  limit_articles + '","offset":0,' +
+                  '"uri":"/edicion-impresa/opinion/"}']
     custom_settings = {
         'ROBOTSTXT_OBEY': False,
     }
@@ -21,29 +27,23 @@ class AbcSpider(scrapy.Spider):
         @returns requests 0 0
         @scrapes author title url
         """
-        # Esta búsqueda se queda con todo lo que tiene clase item-article y article-link
-        # de esto busca todos los articulos
-        selectors = response.xpath('//*[@class="item-article"]//*[@class="article-link"]')
-        ind = 0
-        for selector in selectors:
-            link = response.urljoin(selector.xpath('.//@href').extract_first())
-            if link is not None:
-                yield scrapy.Request(link, callback=self.parse_article)
-                ind=ind+1
+        items = json.loads(response.text)
+        for item in items['content_elements']:
+            yield self.parse_article(item)
 
-    def parse_article(self, response):
-        import re
-        selector = response.xpath('//*[@class="article-container"]')
-        loader = ItemLoader(DiariosItem(), selector=selector)
-
-        # Busco y guardo autor
-        autor = response.xpath('//*[@class="article-author"]/a/span/text()').extract_first().title().strip()
-        autor = re.sub('[^a-zA-ZñÑáéíóúÁÉÍÓÚ ]', '', autor)
+    def parse_article(self, item):
+        loader = ItemLoader(DiariosItem())
+        for cred in item['credits']['by']:
+            if cred['type'] == 'author':
+                autor = cred['name'].title().strip()
+                # Busco la coma
+                poscoma = autor.find(',')
+                # Si hay coma me quedo con lo de la derecha
+                if  poscoma > -1:
+                    autor = autor[:poscoma]
+                # Saco símbolos extraños
+                #autor = re.sub('[^a-zA-ZñÑáéíóúÁÉÍÓÚ ]', '', autor)
         loader.add_value('author', autor)
-
-        # Guardo título
-        loader.add_value('title', response.xpath('.//h1//text()').extract_first().strip())
-
-        # Guardo URL
-        loader.add_value('url', response.request.url)
+        loader.add_value('title', item['headlines']['basic'])
+        loader.add_value('url', 'http://www.abc.com.py' + item['website_url'])
         return loader.load_item()
