@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import re
 
 import scrapy
 from scrapy.loader import ItemLoader
@@ -42,7 +43,7 @@ class AbcSpider(scrapy.Spider):
                 if  poscoma > -1:
                     autor = autor[:poscoma]
                 # Saco símbolos extraños
-                #autor = re.sub('[^a-zA-ZñÑáéíóúÁÉÍÓÚ ]', '', autor)
+                autor = re.sub('[^a-zA-ZñÑáéíóúÁÉÍÓÚ ]', '', autor).strip()
         loader.add_value('author', autor)
         loader.add_value('title', item['headlines']['basic'])
         loader.add_value('url', 'http://www.abc.com.py' + item['website_url'])
