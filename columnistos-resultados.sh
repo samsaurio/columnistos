@@ -28,7 +28,7 @@ $composebin -f $carpetascript/docker-compose.yml run --rm app sqlite3 \
 
   # Monto carpeta remota
   echo -e "Montando carpeta remota"
-  sudo mount -t davfs https://nube.tedic.net/remote.php/webdav/TEDIC/ColumnistosResultados $carpeta/
+  sudo mount -t davfs https://nube.tedic.net/remote.php/webdav/TEDIC/Columnistos/ColumnistosResultados $carpeta/
   sudo chown lupa:lupa $carpeta
 
   # Copio y limpio
