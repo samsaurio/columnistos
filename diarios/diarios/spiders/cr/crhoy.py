@@ -10,6 +10,7 @@ import logging
 
 class CRHoySpider(scrapy.Spider):
     name = 'crhoy'
+    country = 'Costa Rica'
     allowed_domains = ['www.crhoy.com']
     start_urls = ['https://www.crhoy.com/site/generators/category.php?cat=7809&cant=20&text=300&current=1&date=1&portada=0&author=1']
 
@@ -22,6 +23,7 @@ class CRHoySpider(scrapy.Spider):
         """
 
         jsonresponse = json.loads(response.body_as_unicode())['noticiasCategoria']
+
         for article in jsonresponse:
             yield self.parse_article(article)
 

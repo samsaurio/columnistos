@@ -7,6 +7,7 @@ from diarios.items import DiariosItem
 
 class Pagina12Spider(scrapy.Spider):
     name = 'pagina12'
+    country='Argentina'
     allowed_domains = ['www.pagina12.com.ar']
     start_urls = ['https://www.pagina12.com.ar/']
 

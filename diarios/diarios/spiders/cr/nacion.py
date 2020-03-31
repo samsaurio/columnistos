@@ -9,6 +9,8 @@ import logging
 
 class NacionSpider(scrapy.Spider):
     name = 'nacion'
+    country = 'Costa Rica'
+
     allowed_domains = ['www.nacion.com']
     start_urls = ['http://www.nacion.com/opinion/columnistas/']
 
@@ -20,6 +22,7 @@ class NacionSpider(scrapy.Spider):
         @scrapes author title url
         """
         selectors = response.xpath('//div[@class="generic-results-list-item"]')
+        
         for selector in selectors:
             yield self.parse_article(selector, response)
 
@@ -28,7 +31,7 @@ class NacionSpider(scrapy.Spider):
 
         loader = ItemLoader(item=DiariosItem(), selector=selector)
 
-        titulo = selector.xpath('./article//figure/a/h4/text()').extract_first()
+        titulo = selector.xpath('./article//figure/h4/a/text()').extract_first()
         titulo = re.sub('[^a-zA-ZñÑáéíóúÁÉÍÓÚ ]', '', titulo)
         loader.add_value('title', titulo)
 
@@ -36,6 +39,6 @@ class NacionSpider(scrapy.Spider):
         autor = re.sub('[^a-zA-ZñÑáéíóúÁÉÍÓÚ ]', '', autor)
         loader.add_value('author', autor)
 
-        loader.add_xpath('url', './article//figure/a/@href')
+        loader.add_xpath('url', './article//figure/h4/a/@href')
 
         return loader.load_item()

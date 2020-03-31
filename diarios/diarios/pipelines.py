@@ -97,16 +97,18 @@ class StorePipeline(object):
         item['title'] = item['title'][0]
         item['url'] = item['url'][0]
         item['site'] = spider.name
+        item['country'] = spider.country
         item['added'] = self.dt
-        article_table.insert_ignore(item, ['author_id', 'site', 'url'])
+        article_table.insert_ignore(item, ['author_id', 'site', 'url','country'])
 
         # updates last_seen if article exists
         item['last_seen'] = self.dt
         article_table.update(dict(author_id=item['author_id'],
                                   site=item['site'],
+                                  country=item['country'],
                                   url=item['url'],
                                   last_seen=item['last_seen']),
-                             ['author_id', 'site', 'url'])
+                             ['author_id', 'site', 'url','country'])
 
         return item
 

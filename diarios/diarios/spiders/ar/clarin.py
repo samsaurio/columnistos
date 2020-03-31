@@ -9,6 +9,7 @@ from diarios.items import DiariosItem
 
 class ClarinSpider(scrapy.Spider):
     name = 'clarin'
+    country='Argentina'
     allowed_domains = ['www.clarin.com']
     start_urls = ['https://www.clarin.com/']
 
@@ -25,6 +26,12 @@ class ClarinSpider(scrapy.Spider):
             '//div[@class="data-txt"]//p[contains(.,"Opinión")]')
         for selector in selectors:
             yield self.parse_article_body(selector, response)
+
+        selectors = response.xpath(
+            '//*[@id="columnas"]//div[@class="mt"]')
+        for selector in selectors:
+            yield self.parse_article_grouped(selector, response)
+
 
         # links to jsons
         on_demand = response.xpath(

@@ -7,6 +7,7 @@ from diarios.items import DiariosItem
 
 class PerfilSpider(scrapy.Spider):
     name = 'perfil'
+    country='Argentina'
     allowed_domains = ['www.perfil.com']
     start_urls = ['http://www.perfil.com/']
 

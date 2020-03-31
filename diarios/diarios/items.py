@@ -14,5 +14,6 @@ class DiariosItem(scrapy.Item):
     author_id = scrapy.Field()
     url = scrapy.Field()
     site = scrapy.Field()
+    country= scrapy.Field()
     added = scrapy.Field(serializer=str)
     last_seen = scrapy.Field(serializer=str)

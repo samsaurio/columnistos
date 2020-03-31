@@ -7,6 +7,7 @@ from diarios.items import DiariosItem
 
 class LanacionSpider(scrapy.Spider):
     name = 'lanacion'
+    country='Argentina'
     allowed_domains = ['www.lanacion.com.ar']
     start_urls = ['http://www.lanacion.com.ar/']
 
